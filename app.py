@@ -29,7 +29,7 @@ def generate_hearts(n=50):
             opacity:{opacity};
             pointer-events:none;
             z-index:0;
-        ">💗</div>
+        ">♥️</div>
         """
     return hearts_html
 
