@@ -146,7 +146,7 @@ elif st.session_state.step == 2:
     # --- SHOW FUN GIFS ---
     if st.session_state.chai == "adrak":
         st.info("Strong choice… just like you 💃")
-        gif = load_gif("assets/adrak.GiF")
+        gif = load_gif("assets/adrak.GIF")
 
     elif st.session_state.chai == "elaichi":
         st.success("Soft & calm… your vibe 🌸")
