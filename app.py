@@ -187,7 +187,7 @@ elif st.session_state.step == 3:
 # ================= STEP 4 =================
 elif st.session_state.step == 4:
     st.balloons()
-    st.title("For you 💖")
+    st.title("Specially for you 💖")
 
     gif = load_gif("assets/bear.GIF")
 
