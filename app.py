@@ -18,7 +18,7 @@ def generate_hearts(n=35):
         size = random.randint(12, 30)
         left = random.randint(0, 100)
         top = random.randint(0, 100)
-        opacity = round(random.uniform(0.15, 0.45), 2)
+        opacity = round(random.uniform(0.15, 0.4), 2)
 
         hearts_html += f"""
         <div style="
