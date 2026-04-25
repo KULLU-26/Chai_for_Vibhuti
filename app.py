@@ -3,21 +3,22 @@ import time
 import base64
 import random
 
+# ---------------- CONFIG ----------------
 st.set_page_config(page_title="For Vibhuti ☕", page_icon="💖")
 
-# -------- LOAD GIF --------
+# ---------------- LOAD GIF ----------------
 def load_gif(path):
     with open(path, "rb") as f:
         return base64.b64encode(f.read()).decode()
 
-# -------- RANDOM HEARTS --------
-def generate_hearts(n=15):
+# ---------------- RANDOM HEARTS ----------------
+def generate_hearts(n=35):
     hearts_html = ""
     for _ in range(n):
-        size = random.randint(12, 28)
+        size = random.randint(12, 30)
         left = random.randint(0, 100)
         top = random.randint(0, 100)
-        opacity = random.uniform(0.2, 0.6)
+        opacity = round(random.uniform(0.15, 0.45), 2)
 
         hearts_html += f"""
         <div style="
@@ -27,13 +28,14 @@ def generate_hearts(n=15):
             font-size:{size}px;
             opacity:{opacity};
             pointer-events:none;
+            z-index:0;
         ">💗</div>
         """
     return hearts_html
 
 st.markdown(generate_hearts(), unsafe_allow_html=True)
 
-# -------- FONT & UI --------
+# ---------------- UI ----------------
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap');
@@ -44,6 +46,7 @@ html, body {
     color: #4b3621;
 }
 
+/* BUTTONS */
 button {
     width: 100%;
     background-color: #6F4E37 !important;
@@ -55,6 +58,7 @@ button {
     font-size: 15px !important;
 }
 
+/* CARD */
 .card {
     background: white;
     padding: 20px;
@@ -62,10 +66,15 @@ button {
     text-align: center;
     box-shadow: 0 8px 20px rgba(0,0,0,0.08);
 }
+
+/* TEXT CENTER */
+.center {
+    text-align: center;
+}
 </style>
 """, unsafe_allow_html=True)
 
-# -------- STATE --------
+# ---------------- STATE ----------------
 if "step" not in st.session_state:
     st.session_state.step = 0
 if "chai" not in st.session_state:
@@ -75,9 +84,9 @@ if "chai" not in st.session_state:
 if st.session_state.step == 0:
     st.title("Hey Vibhuti ✨")
 
-    st.write("Gwalior mein full shaadi chaos chal raha hoga na 😅")
-    st.write("Thoda break toh banta hai…")
-    st.write("So I made this tiny chai break for you ☕")
+    st.markdown("<div class='center'>Gwalior mein full shaadi chaos chal raha hoga na 😅</div>", unsafe_allow_html=True)
+    st.markdown("<div class='center'>Thoda break toh banta hai…</div>", unsafe_allow_html=True)
+    st.markdown("<div class='center'>So I made this tiny chai break for you ☕</div>", unsafe_allow_html=True)
 
     if st.button("Take a break 💖"):
         st.session_state.step = 1
@@ -93,7 +102,8 @@ elif st.session_state.step == 1:
     )
 
     if st.button("Fix my vibe ☕"):
-        time.sleep(1)
+        with st.spinner("Brewing sukoon..."):
+            time.sleep(1.2)
         st.session_state.step = 2
         st.rerun()
 
@@ -103,12 +113,25 @@ elif st.session_state.step == 2:
 
     if st.button("Adrak wali"):
         st.session_state.chai = "adrak"
+
     if st.button("Elaichi wali"):
         st.session_state.chai = "elaichi"
+
     if st.button("Masala chai"):
         st.session_state.chai = "masala"
 
+    # --- Feedback messages ---
+    if st.session_state.chai == "adrak":
+        st.info("Strong choice… just like you handling everything 💃")
+
+    elif st.session_state.chai == "elaichi":
+        st.success("Soft & calm… your vibe 🌸")
+
+    elif st.session_state.chai == "masala":
+        st.warning("Multitasking queen energy 💪")
+
     if st.session_state.chai:
+        time.sleep(0.3)
         if st.button("Next ➡️"):
             st.session_state.step = 3
             st.rerun()
@@ -117,10 +140,10 @@ elif st.session_state.step == 2:
 elif st.session_state.step == 3:
     st.title("Quick reminder 💌")
 
-    st.write("Paani peena mat bhoolna 💧")
-    st.write("Thoda rest lena")
-    st.write("Aur haan… you're doing really well")
-    st.write("Main Pune mein wait kar raha hoon 😌")
+    st.markdown("<div class='center'>Paani peena mat bhoolna 💧</div>", unsafe_allow_html=True)
+    st.markdown("<div class='center'>Thoda rest lena</div>", unsafe_allow_html=True)
+    st.markdown("<div class='center'>Aur haan… you're doing really well</div>", unsafe_allow_html=True)
+    st.markdown("<div class='center'>Main Pune mein wait kar raha hoon 😌</div>", unsafe_allow_html=True)
 
     if st.button("Open surprise 🎁"):
         st.session_state.step = 4
@@ -146,15 +169,15 @@ elif st.session_state.step == 4:
             unsafe_allow_html=True
         )
     except:
-        st.warning("Check GIF names")
+        st.warning("Check GIF names in assets folder")
 
-    # CLEAN TEXT (NO HTML BUG)
-    st.write("### You're handling a lot right now 💭")
-    st.write("And you're doing it calmly… that’s not normal, that’s rare.")
-    st.write("Bas ek baat yaad rakhna:")
-    st.write("**jab overload lage… Pune mein ek chai pending hai ☕**")
-    st.write("(Aur haan, I’ll listen to all the gossip 😌)")
-    st.write("— Pratik")
+    # --- CLEAN FINAL MESSAGE ---
+    st.markdown("### You're handling a lot right now 💭")
+    st.markdown("And you're doing it calmly… that’s not normal, that’s rare.")
+    st.markdown("Bas ek baat yaad rakhna:")
+    st.markdown("**jab overload lage… Pune mein ek chai pending hai ☕**")
+    st.markdown("_Aur haan, I’ll listen to all the gossip 😌_")
+    st.markdown("**— Pratik**")
 
     if st.button("Start again 🔄"):
         st.session_state.step = 0
