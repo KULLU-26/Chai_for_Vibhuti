@@ -1,48 +1,47 @@
 import streamlit as st
+import streamlit as st
 import time
+import base64
 
-# Page Config
+# --- PAGE CONFIG ---
 st.set_page_config(page_title="Sukoon", page_icon="🧸", layout="centered")
 
-# --- THEME-PROOF & CUTE UI ENGINE ---
+# --- LOAD LOCAL GIF (BULLETPROOF METHOD) ---
+def load_gif(path):
+    with open(path, "rb") as f:
+        data = base64.b64encode(f.read()).decode("utf-8")
+    return data
+
+# --- THEME / UI ---
 st.markdown("""
     <style>
-    /* 1. SCATTERED HEARTS BACKGROUND (Theme-Proof) */
     .stApp {
         background-color: #FFF5F5 !important;
         background-image: 
-            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M50 30c-2-5-10-5-12 0-2 5 2 10 12 18 10-8 14-13 12-18-2-5-10-5-12 0z' fill='%23FFB7C5' fill-opacity='0.3'/%3E%3C/svg%3E"),
-            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 100 100'%3E%3Cpath d='M20 10c-1-3-5-3-6 0-1 3 1 6 6 11 5-5 7-8 6-11-1-3-5-3-6 0z' fill='%23FFD1DC' fill-opacity='0.4'/%3E%3C/svg%3E"),
-            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 100 100'%3E%3Cpath d='M80 70c-2-4-8-4-10 0-2 4 2 8 10 15 8-7 12-11 10-15-2-4-8-4-10 0z' fill='%23FFB7C5' fill-opacity='0.2'/%3E%3C/svg%3E");
-        background-position: 10% 10%, 40% 60%, 80% 20%;
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cpath d='M50 30c-2-5-10-5-12 0-2 5 2 10 12 18 10-8 14-13 12-18-2-5-10-5-12 0z' fill='%23FFB7C5' fill-opacity='0.3'/%3E%3C/svg%3E");
         background-attachment: fixed;
     }
 
-    /* 2. BUTTONS - Forced Visibility & High Contrast */
     div.stButton > button {
         width: 100% !important;
-        background-color: #6F4E37 !important; /* Deep Brown */
+        background-color: #6F4E37 !important;
         border-radius: 25px !important;
         height: 3.5em !important;
         border: none !important;
         box-shadow: 0 4px 15px rgba(0,0,0,0.15) !important;
     }
-    
-    /* This targets the actual text label inside the button */
+
     div.stButton > button p {
         color: #FFFFFF !important;
         font-size: 18px !important;
         font-weight: bold !important;
-        letter-spacing: 0.5px !important;
     }
 
-    /* 3. TYPOGRAPHY - Deep Brown for Readability */
-    h1, h2, h3, p, span, li, label {
+    h1, h2, h3, p, span, li {
         color: #4b3621 !important;
-        font-family: 'Comic Sans MS', 'cursive', sans-serif !important;
+        font-family: 'Comic Sans MS', cursive !important;
     }
 
-    /* 4. SURPRISE CARD STYLING */
     .polaroid {
         background: white !important;
         padding: 20px;
@@ -58,115 +57,148 @@ st.markdown("""
         line-height: 1.6;
     }
     </style>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
-# --- SESSION LOGIC ---
+# --- SESSION STATE ---
 if 'step' not in st.session_state:
     st.session_state.step = 0
 if 'chai_choice' not in st.session_state:
     st.session_state.chai_choice = None
 
-# --- APP FLOW ---
+# --- FLOW ---
 
+# STEP 0
 if st.session_state.step == 0:
     st.title("Hey Vibhuti... ✨")
     st.markdown("""
     <div class='hinglish-text'>
-    I know Gwalior mein abhi sab kitna hectic chal raha hoga. Haldi, Mehendi, Poojas, and endless relatives... 
-    <br><br>Pata hai tum thoda thak gayi ho, aur ye break deserved hai.
+    I know Gwalior mein abhi sab kitna hectic chal raha hoga... 
     <br><br>
-    I can't bring you actual <b>adrak wali chai</b> from Pune yet, 
-    par tumhare chehre pe ek smile laane ke liye I made this small 'Virtual Escape'. 
+    Haldi, Mehendi, pooja, relatives — full chaos mode 😅
+    <br><br>
+    So I made a tiny break for you.
+    <br><br>
+    Not real chai yet... but thoda sa sukoon ☕
     </div>
     """, unsafe_allow_html=True)
-    st.write("")
+
     if st.button("Take your break ☕💖"):
         st.session_state.step = 1
         st.rerun()
 
+# STEP 1
 elif st.session_state.step == 1:
     st.title("Mood Check ✨")
-    st.markdown("<div class='hinglish-text'>Sachi batana, how tired are you right now?</div>", unsafe_allow_html=True)
-    stress_level = st.select_slider(
+    st.markdown("<div class='hinglish-text'>Sach batao… kitni thak gayi ho?</div>", unsafe_allow_html=True)
+
+    st.select_slider(
         "",
         options=["Thoda Tired", "Kaafi Tired", "Bilkul Exhausted", "Bas Ab Pune Jaana Hai!"]
     )
-    
+
     if st.button("Fix my vibe"):
         with st.spinner("Brewing sukoon...☕"):
             time.sleep(1.5)
         st.session_state.step = 2
         st.rerun()
 
+# STEP 2
 elif st.session_state.step == 2:
-    st.title("Tera Virtual Chai Break ☕")
-    # Using a high-quality emoji for stability on Step 2
-    st.markdown("<h1 style='text-align: center; font-size: 80px;'>☕</h1>", unsafe_allow_html=True)
+    st.title("Tera Chai Break ☕")
+    st.markdown("<h1 style='text-align:center;'>☕</h1>", unsafe_allow_html=True)
 
-    st.markdown("<p style='text-align: center; font-size: 18px;'><b>Aaj kya piyogi?</b></p>", unsafe_allow_html=True)
-    
+    st.markdown("<p style='text-align:center;'>Aaj kya piyogi?</p>", unsafe_allow_html=True)
+
     if st.button("Adrak Wali Chai"):
         st.session_state.chai_choice = "adrak"
+
     if st.button("Elaichi Wali Chai"):
         st.session_state.chai_choice = "elaichi"
+
     if st.button("Masala Chai"):
         st.session_state.chai_choice = "masala"
 
     if st.session_state.chai_choice == "adrak":
-        st.info("Strong & refreshing—exactly the energy you need for the wedding crowd! 💃")
+        st.info("Strong & refreshing—just like you handling everything 💃")
+
     elif st.session_state.chai_choice == "elaichi":
-        st.success("Calm and sweet. Just take a deep breath... you've got this. 🌸")
+        st.success("Calm, sweet… take a breath 🌸")
+
     elif st.session_state.chai_choice == "masala":
-        st.warning("Handling everything like a pro? This one is for the multitasker in you. 💪")
+        st.warning("Multitasking queen mode 💪")
 
     if st.session_state.chai_choice:
-        st.write("---")
-        if st.button("Next? ➡️"):
+        if st.button("Next ➡️"):
             st.session_state.step = 3
             st.rerun()
 
+# STEP 3
 elif st.session_state.step == 3:
-    st.title("Chota sa Reminder... 💌")
+    st.title("Chota Reminder 💌")
+
     st.markdown("""
     <div class='hinglish-text'>
-    While you're busy handling the shaadi crowd:
+    Shaadi chaos ke beech:
     <br><br>
-    ✅ <b>Keep drinking water</b> (Hydrated rehna!)<br>
-    ✅ <b>You're doing an amazing job</b>, Vibhuti.<br>
-    ✅ <b>I'm waiting in Pune</b> to hear all the gossip once you're free.
+    ✅ Paani peete rehna<br>
+    ✅ Thoda rest lena<br>
+    ✅ Aur haan… you're doing amazing
     <br><br>
-    I'm genuinely proud of how you handle everything with such grace.
+    Main Pune mein wait kar raha hoon — full story sunne ke liye 😌
     </div>
     """, unsafe_allow_html=True)
-    st.write("")
-    if st.button("Click for your surprise 🎁"):
+
+    if st.button("Open your surprise 🎁"):
         st.session_state.step = 4
         st.rerun()
 
+# STEP 4 (FINAL)
 elif st.session_state.step == 4:
+    st.toast("You made her smile. Trust me. 💖")
     st.balloons()
-    st.title("For You. 💖")
-    
+    st.title("For You 💖")
+
     st.markdown('<div class="polaroid">', unsafe_allow_html=True)
-    
-    # GUARANTEED IMAGE LOAD: Using a high-quality baby bear couple image
-    st.image("https://i.pinimg.com/originals/74/4d/93/744d93563914a27f6e07672251f280c4.gif", use_container_width=True)
-    
+
+    # --- LOAD LOCAL GIF ---
+    try:
+        gif = load_gif("assets/bear.gif")
+        st.markdown(
+            f'<img src="data:image/gif;base64,{gif}" width="100%">',
+            unsafe_allow_html=True
+        )
+    except:
+        st.warning("Add a GIF in /assets folder named 'bear.gif' 😊")
+
     st.markdown("""
         <div style="padding: 10px 0;">
-            <h3 style="color: #6F4E37 !important;">You're doing great, Vibhuti.</h3>
-            <p style="font-size: 18px;">
-            Efforts are easy when they're for someone as special as you. 
-            I hope this chota sa break put a smile on your face today.
+            <h3 style="color:#6F4E37;">
+            Tum itna sab handle kaise kar leti ho, honestly? 💭
+            </h3>
+
+            <p style="font-size:18px;">
+            Itni chaos mein bhi tum calm reh leti ho... that's rare.
             <br><br>
-            Can't wait to grab a <b>real</b> chai with you when you're back.
+
+            Tum bol dogi “normal hai” — but it’s not.
+            <br><br>
+
+            Bas yaad rakhna:
+            <br>
+            <b>jab overload lage… Pune mein ek chai pending hai ☕</b>
+            <br><br>
+
+            (Aur haan, gossip bhi sununga 😌)
             </p>
-            <p style="text-align: right; font-weight: bold; color: #6F4E37 !important; font-size: 24px;">- Pratik</p>
+
+            <p style="text-align:right; font-weight:bold; font-size:22px;">
+            - Pratik
+            </p>
         </div>
     """, unsafe_allow_html=True)
+
     st.markdown('</div>', unsafe_allow_html=True)
-    
-    st.write("")
+
     if st.button("Start Over"):
         st.session_state.step = 0
         st.session_state.chai_choice = None
