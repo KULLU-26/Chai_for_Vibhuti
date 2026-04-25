@@ -6,71 +6,62 @@ import requests
 # Page Config
 st.set_page_config(page_title="Sukoon", page_icon="☕", layout="centered")
 
-# --- Lottie Loaders ---
+# --- Optimized Lottie Loaders ---
 def load_lottieurl(url: str):
     try:
-        r = requests.get(url)
+        r = requests.get(url, timeout=5)
         if r.status_code != 200: return None
         return r.json()
     except: return None
 
-# Stable Lottie URLs
-lottie_chai = load_lottieurl("https://lottie.host/64295304-4061-469b-9807-681995804561/vjKizf5V70.json")
-lottie_cozy = load_lottieurl("https://lottie.host/93a0b810-7212-4217-889a-080e72251f28/mS7lV6mZ25.json")
+# Using extremely stable legacy Lottie URLs
+lottie_chai = load_lottieurl("https://assets9.lottiefiles.com/packages/lf20_08m9z96p.json")
+lottie_cozy = load_lottieurl("https://assets2.lottiefiles.com/packages/lf20_t9gkkhz4.json")
 
-# --- CUSTOM CSS (The Fix) ---
+# --- THEME-PROOF CSS ---
 st.markdown("""
     <style>
-    /* 1. Force the background color and Hearts pattern for ALL screens */
+    /* 1. Force the background to have ACTUAL hearts and beige color */
     .stApp {
-        background-color: #fdf5e6;
-        background-image:  
-            radial-gradient(#ffb7c5 10%, transparent 10%),
-            radial-gradient(#ffb7c5 10%, transparent 10%);
-        background-size: 50px 50px;
-        background-position: 0 0, 25px 25px;
-        opacity: 0.9;
+        background-color: #fdf5e6 !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 20 20'%3E%3Cpath d='M10 3.22l-.61-.6a5.5 5.5 0 0 0-7.78 7.77L10 18.78l8.39-8.4a5.5 5.5 0 0 0-7.78-7.77l-.61.61z' fill='%23ffb7c5' fill-opacity='0.2'/%3E%3C/svg%3E");
     }
 
-    /* 2. Fix Button Visibility - Force White Text */
-    .stButton>button {
-        width: 100%;
-        border-radius: 20px;
-        height: 3.5em;
-        background-color: #6F4E37 !important; /* Brown */
-        color: white !important; /* FORCED WHITE TEXT */
+    /* 2. Fix Button Visibility - NO MATTER THE THEME */
+    div.stButton > button {
+        background-color: #6F4E37 !important;
+        border: 2px solid #5d4037 !important;
+        border-radius: 15px !important;
+        padding: 10px !important;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2) !important;
+    }
+    
+    /* Targeting the text specifically inside the button */
+    div.stButton > button p {
+        color: white !important;
         font-weight: bold !important;
         font-size: 18px !important;
-        border: none !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        margin-bottom: 12px;
     }
 
-    /* 3. Text Styling */
-    h1, h2, h3, p, span {
+    /* 3. Text Styling (Ensuring everything is readable brown) */
+    h1, h2, h3, p, span, li, div {
         color: #4b3621 !important;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    /* 4. Polaroid Styling */
+    /* 4. Polaroid/Final Card Styling */
     .polaroid {
-        background: white;
+        background: white !important;
         padding: 20px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         text-align: center;
-        border-radius: 15px;
-        border: 2px solid #fff;
+        border-radius: 20px;
+        border: 1px solid #eee;
     }
 
     .hinglish-text {
         font-size: 19px;
         text-align: center;
         line-height: 1.6;
-    }
-
-    .highlight {
-        color: #6F4E37;
-        font-weight: bold;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -90,7 +81,7 @@ if st.session_state.step == 0:
     I know Gwalior mein abhi sab kitna hectic chal raha hoga. Haldi, Mehendi, Poojas, and endless relatives... 
     <br>Pata hai tum thoda thak gayi ho.
     <br><br>
-    I can't bring you actual <span class='highlight'>adrak wali chai</span> from Pune yet, 
+    I can't bring you actual <b>adrak wali chai</b> from Pune yet, 
     par tumhare chote se break ke liye I made this 'Virtual Escape'. Just for you.
     </div>
     """, unsafe_allow_html=True)
@@ -108,15 +99,15 @@ elif st.session_state.step == 1:
     )
     
     if st.button("Fix my vibe ✨"):
-        with st.spinner("Brewing your sukoon...☕"):
-            time.sleep(1.5)
+        with st.spinner("Brewing your sukoon..."):
+            time.sleep(1)
         st.session_state.step = 2
         st.rerun()
 
 elif st.session_state.step == 2:
     st.title("Tera Virtual Chai Break ☕")
     if lottie_chai:
-        st_lottie(lottie_chai, height=200, key="chai")
+        st_lottie(lottie_chai, height=200, key="chai_anim")
     else:
         st.header("☕")
 
@@ -130,11 +121,11 @@ elif st.session_state.step == 2:
         st.session_state.chai_choice = "masala"
 
     if st.session_state.chai_choice == "adrak":
-        st.info("Strong & refreshing—exactly the energy you need to handle those 50 extra relatives! 💃")
+        st.info("Strong & refreshing—exactly the energy you need for those 50 extra relatives! 💃")
     elif st.session_state.chai_choice == "elaichi":
-        st.success("Calm and sweet. Just take a deep breath... the functions are almost over. You've got this. 🌸")
+        st.success("Sweet & calming. Just take a deep breath... you've got this. 🌸")
     elif st.session_state.chai_choice == "masala":
-        st.warning("Handling 10 things at once like a pro? This one is for the multitasker in you. 💪")
+        st.warning("Handling everything like a pro? This one is for the multitasker in you. 💪")
 
     if st.session_state.chai_choice:
         st.write("---")
@@ -166,7 +157,7 @@ elif st.session_state.step == 4:
     
     st.markdown('<div class="polaroid">', unsafe_allow_html=True)
     if lottie_cozy:
-        st_lottie(lottie_cozy, height=250, key="finale")
+        st_lottie(lottie_cozy, height=250, key="cozy_anim")
     else:
         st.header("🏠❤️")
     
@@ -178,7 +169,7 @@ elif st.session_state.step == 4:
             <br><br>
             Can't wait to grab a <b>real</b> chai with you when you're back in Pune.
             </p>
-            <p style="text-align: right; font-weight: bold; color: #6F4E37 !important; font-size: 22px;">- Pratik</p>
+            <p style="text-align: right; font-weight: bold; color: #6F4E37 !important; font-size: 24px;">- Pratik</p>
         </div>
     """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
