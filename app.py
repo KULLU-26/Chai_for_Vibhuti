@@ -187,7 +187,7 @@ elif st.session_state.step == 3:
 # ================= STEP 4 =================
 elif st.session_state.step == 4:
     st.balloons()
-    st.title("Specially for you 💖")
+    st.title("For you, Vibhuti 💖")
 
     gif = load_gif("assets/bear.GIF")
 
@@ -197,11 +197,16 @@ elif st.session_state.step == 4:
             unsafe_allow_html=True
         )
 
-    st.markdown("### You're handling a lot right now 💭")
-    st.markdown("And you're doing it calmly… that’s not normal, that’s rare.")
-    st.markdown("Bas ek baat yaad rakhna:")
-    st.markdown("**jab overload lage… Pune mein ek chai pending hai ☕**")
-    st.markdown("_Aur haan, I’ll listen to all the gossip 😌_")
+    # --- PERSONAL MESSAGE (Option 3) ---
+    st.markdown("### I know tum pe kaafi kuch chal raha hai abhi… 💭")
+    st.markdown("Aur phir bhi the way you’re holding everything together—")
+    st.markdown("it’s genuinely impressive.")
+    
+    st.markdown("Bas ek simple sa reminder:")
+    st.markdown("**jab bhi sab thoda heavy lage, Pune mein ek chai tumhara wait kar rahi hai ☕**")
+    
+    st.markdown("Aur main bhi.")
+
     st.markdown("**— Pratik**")
 
     if st.button("Start again 🔄"):
