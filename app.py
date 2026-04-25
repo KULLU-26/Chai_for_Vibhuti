@@ -4,126 +4,146 @@ from streamlit_lottie import st_lottie
 import requests
 
 # Page Config
-st.set_page_config(page_title="Sukoon", page_icon="☕", layout="centered")
+st.set_page_config(page_title="Sukoon", page_icon="💖", layout="centered")
 
 # --- Optimized Lottie Loaders ---
 def load_lottieurl(url: str):
     try:
-        r = requests.get(url, timeout=5)
+        r = requests.get(url, timeout=10)
         if r.status_code != 200: return None
         return r.json()
     except: return None
 
-# Using extremely stable legacy Lottie URLs
-lottie_chai = load_lottieurl("https://assets9.lottiefiles.com/packages/lf20_08m9z96p.json")
-lottie_cozy = load_lottieurl("https://assets2.lottiefiles.com/packages/lf20_t9gkkhz4.json")
+# Using the most stable Lottie links for "Chai" and "Cozy Heart"
+lottie_chai = load_lottieurl("https://lottie.host/64295304-4061-469b-9807-681995804561/vjKizf5V70.json")
+lottie_final = load_lottieurl("https://lottie.host/33827ec5-3645-42f2-8956-62181518f841/SHeR2Nf1K4.json")
 
-# --- THEME-PROOF CSS ---
+# --- THE "ROMANTIC & CUTE" UI ENGINE ---
 st.markdown("""
     <style>
-    /* 1. Force the background to have ACTUAL hearts and beige color */
+    /* 1. RANDOM FLOATING HEARTS BACKGROUND */
     .stApp {
-        background-color: #fdf5e6 !important;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 20 20'%3E%3Cpath d='M10 3.22l-.61-.6a5.5 5.5 0 0 0-7.78 7.77L10 18.78l8.39-8.4a5.5 5.5 0 0 0-7.78-7.77l-.61.61z' fill='%23ffb7c5' fill-opacity='0.2'/%3E%3C/svg%3E");
+        background-color: #FFF5F5 !important;
+        background-image: 
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M50 30c-5-10-20-10-25 0-5 10 5 20 25 35 20-15 30-25 25-35-5-10-20-10-25 0z' fill='%23FFB7C5' fill-opacity='0.2'/%3E%3C/svg%3E"),
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 100 100'%3E%3Cpath d='M20 10c-3-5-12-5-15 0-3 5 3 12 15 22 12-10 18-17 15-22-3-5-12-5-15 0z' fill='%23FFD1DC' fill-opacity='0.15'/%3E%3C/svg%3E");
+        background-position: 10% 20%, 80% 50%, 40% 80%, 90% 10%;
+        background-attachment: fixed;
     }
 
-    /* 2. Fix Button Visibility - NO MATTER THE THEME */
+    /* 2. CUTE BUTTONS - Forced White Text & Rounded Corners */
     div.stButton > button {
-        background-color: #6F4E37 !important;
-        border: 2px solid #5d4037 !important;
-        border-radius: 15px !important;
-        padding: 10px !important;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2) !important;
+        background: linear-gradient(135deg, #6F4E37 0%, #8B5E3C 100%) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 25px !important;
+        padding: 12px 25px !important;
+        font-weight: 700 !important;
+        font-size: 18px !important;
+        box-shadow: 0 6px 15px rgba(111, 78, 55, 0.3) !important;
+        transition: all 0.3s ease !important;
     }
     
-    /* Targeting the text specifically inside the button */
+    div.stButton > button:hover {
+        transform: scale(1.03) !important;
+        box-shadow: 0 8px 20px rgba(111, 78, 55, 0.4) !important;
+    }
+
+    /* Target the text inside the button strictly */
     div.stButton > button p {
         color: white !important;
-        font-weight: bold !important;
-        font-size: 18px !important;
     }
 
-    /* 3. Text Styling (Ensuring everything is readable brown) */
-    h1, h2, h3, p, span, li, div {
-        color: #4b3621 !important;
+    /* 3. TYPOGRAPHY */
+    h1, h2, h3, p, span, li {
+        color: #5D4037 !important;
+        font-family: 'Comic Sans MS', 'cursive', sans-serif !important;
     }
 
-    /* 4. Polaroid/Final Card Styling */
-    .polaroid {
+    /* 4. THE POLAROID CARD (Surprise Screen) */
+    .polaroid-card {
         background: white !important;
-        padding: 20px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        text-align: center;
+        padding: 30px;
         border-radius: 20px;
-        border: 1px solid #eee;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        border: 1px solid #FFE4E1;
+        text-align: center;
     }
 
     .hinglish-text {
-        font-size: 19px;
+        font-size: 20px;
         text-align: center;
-        line-height: 1.6;
+        line-height: 1.5;
+        font-weight: 500;
+    }
+
+    /* Custom Informational Box Colors */
+    .stAlert {
+        border-radius: 15px !important;
+        background-color: #FFF0F0 !important;
+        border: 1px solid #FFB7C5 !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# Session State
+# --- APP LOGIC ---
+
 if 'step' not in st.session_state:
     st.session_state.step = 0
 if 'chai_choice' not in st.session_state:
     st.session_state.chai_choice = None
-
-# --- APP FLOW ---
 
 if st.session_state.step == 0:
     st.title("Hey Vibhuti... ✨")
     st.markdown("""
     <div class='hinglish-text'>
     I know Gwalior mein abhi sab kitna hectic chal raha hoga. Haldi, Mehendi, Poojas, and endless relatives... 
-    <br>Pata hai tum thoda thak gayi ho.
+    <br><br>Pata hai tum thoda thak gayi ho, aur ye break deserved hai.
     <br><br>
     I can't bring you actual <b>adrak wali chai</b> from Pune yet, 
-    par tumhare chote se break ke liye I made this 'Virtual Escape'. Just for you.
+    par tumhare chehre pe ek smile laane ke liye I made this small 'Virtual Escape'. 
     </div>
     """, unsafe_allow_html=True)
     st.write("")
-    if st.button("Take a 2-minute break ☕✨"):
+    if st.button("Take your break ☕💖"):
         st.session_state.step = 1
         st.rerun()
 
 elif st.session_state.step == 1:
-    st.title("Mood Check 📉")
-    st.markdown("<div class='hinglish-text'>Sach batana, how are you feeling right now?</div>", unsafe_allow_html=True)
+    st.title("Mood Check ✨")
+    st.markdown("<div class='hinglish-text'>Sachi batana, how tired are you right now?</div>", unsafe_allow_html=True)
     stress_level = st.select_slider(
         "",
         options=["Thoda Tired", "Kaafi Tired", "Bilkul Exhausted", "Bas Ab Pune Jaana Hai!"]
     )
     
-    if st.button("Fix my vibe ✨"):
-        with st.spinner("Brewing your sukoon..."):
-            time.sleep(1)
+    if st.button("Fix my vibe"):
+        with st.spinner("Brewing sukoon..."):
+            time.sleep(1.5)
         st.session_state.step = 2
         st.rerun()
 
 elif st.session_state.step == 2:
-    st.title("Tera Virtual Chai Break ☕")
+    st.title("Virtual Chai Break ☕")
     if lottie_chai:
-        st_lottie(lottie_chai, height=200, key="chai_anim")
+        st_lottie(lottie_chai, height=200, key="chai_main")
     else:
         st.header("☕")
 
-    st.markdown("<p style='text-align: center;'><b>What's your pick today?</b></p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; font-size: 18px;'><b>Aaj kya piyogi?</b></p>", unsafe_allow_html=True)
     
-    if st.button("Adrak Wali Chai"):
-        st.session_state.chai_choice = "adrak"
-    if st.button("Elaichi Wali Chai"):
-        st.session_state.chai_choice = "elaichi"
-    if st.button("Masala Chai"):
-        st.session_state.chai_choice = "masala"
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        if st.button("Adrak"): st.session_state.chai_choice = "adrak"
+    with col2:
+        if st.button("Elaichi"): st.session_state.chai_choice = "elaichi"
+    with col3:
+        if st.button("Masala"): st.session_state.chai_choice = "masala"
 
     if st.session_state.chai_choice == "adrak":
         st.info("Strong & refreshing—exactly the energy you need for those 50 extra relatives! 💃")
     elif st.session_state.chai_choice == "elaichi":
-        st.success("Sweet & calming. Just take a deep breath... you've got this. 🌸")
+        st.success("Calm and sweet. Just take a deep breath... the functions are almost over. 🌸")
     elif st.session_state.chai_choice == "masala":
         st.warning("Handling everything like a pro? This one is for the multitasker in you. 💪")
 
@@ -137,37 +157,38 @@ elif st.session_state.step == 3:
     st.title("Chota sa Reminder... 💌")
     st.markdown("""
     <div class='hinglish-text'>
-    While you're busy being the perfect sister at the wedding:
+    While you're busy handling the shaadi crowd:
     <br><br>
-    ✅ <b>Keep drinking water</b> (Sirf chai nahi!)<br>
+    ✅ <b>Keep drinking water</b> (Hydrated rehna!)<br>
     ✅ <b>You're doing an amazing job</b>, Vibhuti.<br>
-    ✅ <b>I'm right here in Pune</b>, waiting to hear all the shaadi gossip.
+    ✅ <b>I'm waiting in Pune</b> to hear all the gossip once you're free.
     <br><br>
-    I'm genuinely so proud of how you handle everything with such grace.
+    I'm genuinely proud of how you handle everything with such grace.
     </div>
     """, unsafe_allow_html=True)
     st.write("")
-    if st.button("Click for a final surprise 🎁✨"):
+    if st.button("Click for your surprise 🎁"):
         st.session_state.step = 4
         st.rerun()
 
 elif st.session_state.step == 4:
     st.balloons()
-    st.title("For You. ✨")
+    st.title("For You. 💖")
     
-    st.markdown('<div class="polaroid">', unsafe_allow_html=True)
-    if lottie_cozy:
-        st_lottie(lottie_cozy, height=250, key="cozy_anim")
+    st.markdown('<div class="polaroid-card">', unsafe_allow_html=True)
+    if lottie_final:
+        st_lottie(lottie_final, height=250, key="final_anim")
     else:
         st.header("🏠❤️")
     
     st.markdown("""
         <div style="padding: 10px 0;">
             <h3 style="color: #6F4E37 !important;">You're doing great, Vibhuti.</h3>
-            <p style="color: #4b3621 !important;">
-            Efforts are easy when they're for someone as special as you. I hope this chota sa break put a smile on your face.
+            <p style="font-size: 18px;">
+            Efforts are easy when they're for someone as special as you. 
+            I hope this chota sa break put a smile on your face today.
             <br><br>
-            Can't wait to grab a <b>real</b> chai with you when you're back in Pune.
+            Can't wait to grab a <b>real</b> chai with you when you're back.
             </p>
             <p style="text-align: right; font-weight: bold; color: #6F4E37 !important; font-size: 24px;">- Pratik</p>
         </div>
