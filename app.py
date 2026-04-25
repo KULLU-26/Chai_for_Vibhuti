@@ -4,9 +4,9 @@ from streamlit_lottie import st_lottie
 import requests
 
 # Page Config
-st.set_page_config(page_title="A Little Sukoon for Vibhuti", page_icon="☕")
+st.set_page_config(page_title="Sukoon for Vibhuti", page_icon="☕")
 
-# Helper function for animations with error handling
+# Helper function for animations
 def load_lottieurl(url: str):
     try:
         r = requests.get(url)
@@ -16,104 +16,144 @@ def load_lottieurl(url: str):
     except:
         return None
 
-# Load animations
-# I've updated these to very stable links
-lottie_chai = load_lottieurl("https://assets9.lottiefiles.com/packages/lf20_08m9z96p.json") # Tea cup
-lottie_heart = load_lottieurl("https://assets5.lottiefiles.com/packages/lf20_96bovdur.json") # Heart
+lottie_chai = load_lottieurl("https://assets9.lottiefiles.com/packages/lf20_08m9z96p.json")
+lottie_heart = load_lottieurl("https://assets5.lottiefiles.com/packages/lf20_96bovdur.json")
 
-# Custom CSS
+# Custom CSS for the "Polaroid" look and vibes
 st.markdown("""
     <style>
     .main {
-        background-color: #FFF9F0;
-    }
-    h1 {
-        color: #6F4E37;
-        font-family: 'Georgia', serif;
+        background-color: #fdf5e6;
     }
     .stButton>button {
+        width: 100%;
+        border-radius: 12px;
+        height: 3em;
         background-color: #6F4E37;
         color: white;
-        border-radius: 20px;
-        border: none;
-        padding: 10px 24px;
+    }
+    .polaroid {
+        background: white;
+        padding: 15px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        text-align: center;
+        border-radius: 5px;
+    }
+    .hinglish-text {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #4b3621;
     }
     </style>
     """, unsafe_allow_html=True)
 
 if 'step' not in st.session_state:
     st.session_state.step = 0
+if 'chai_type' not in st.session_state:
+    st.session_state.chai_type = None
 
 # --- APP LOGIC ---
 
 if st.session_state.step == 0:
     st.title("Hey Vibhuti... ✨")
-    st.write(f"I know things are super hectic in Gwalior right now with all the wedding functions, poojas, and relatives...")
-    st.write("I can't bring you actual ginger chai from Pune yet, but I made this 2-minute 'Virtual Escape' just for you.")
+    st.markdown("""
+    <div class='hinglish-text'>
+    I know Gwalior mein abhi sab kitna hectic chal raha hoga. Haldi, Mehendi, Poojas, and endless relatives... 
+    Pata hai tum thoda thak gayi ho.
+    <br><br>
+    I can't bring you actual <b>adrak wali chai</b> from Pune yet, but I made this 2-minute 'Virtual Escape' just for you.
+    </div>
+    """, unsafe_allow_html=True)
     
     if st.button("I need a break! 🙋‍♀️"):
         st.session_state.step = 1
         st.rerun()
 
 elif st.session_state.step == 1:
-    st.title("The Stress-o-Meter 📉")
+    st.title("Mood Check 📉")
+    st.write("Sach batana, how are you feeling right now?")
     stress_level = st.select_slider(
-        "On a scale of 'Happy' to 'Haldi-overload', how tired are you?",
-        options=["Energetic", "Tired", "Need Nap", "Save Me", "Fully Exhausted"]
+        "",
+        options=["Thoda Tired", "Kaafi Tired", "Bilkul Exhausted", "Bas Ab Ghar Jaana Hai!"]
     )
     
-    if st.button("Fix my mood!"):
-        with st.spinner("Brewing something special..."):
-            time.sleep(2)
+    if st.button("Fix my vibe"):
+        with st.spinner("Brewing your sukoon..."):
+            time.sleep(1.5)
         st.session_state.step = 2
         st.rerun()
 
 elif st.session_state.step == 2:
-    st.title("Virtual Chai Break ☕")
-    
-    # Check if animation loaded, otherwise show an emoji
+    st.title("Tera Virtual Chai Break ☕")
     if lottie_chai:
-        st_lottie(lottie_chai, height=300)
-    else:
-        st.header("☕") 
+        st_lottie(lottie_chai, height=200)
 
-    st.subheader("Pick your mood-fixer:")
-    col1, col2, col3 = st.columns(3)
+    st.markdown("<p style='text-align: center;'><b>What are we drinking?</b></p>", unsafe_allow_html=True)
     
+    col1, col2, col3 = st.columns(3)
     with col1:
-        if st.button("Adrak Wali Chai"):
-            st.info("Strong & refreshing—just like your energy at the wedding! 💃")
+        if st.button("Adrak"):
+            st.session_state.chai_type = "adrak"
     with col2:
-        if st.button("Elaichi Chai"):
-            st.success("Sweet & calming—breathe in, the functions are almost over! 🌸")
+        if st.button("Elaichi"):
+            st.session_state.chai_type = "elaichi"
     with col3:
-        if st.button("Masala Chai"):
-            st.warning("A bit of everything—hang in there, you're doing great! 💪")
+        if st.button("Masala"):
+            st.session_state.chai_type = "masala"
 
-    st.write("---")
-    if st.button("Okay, I feel a bit better. What's next?"):
-        st.session_state.step = 3
-        st.rerun()
+    # Dynamic Messages instead of generic popups
+    if st.session_state.chai_type == "adrak":
+        st.info("Strong & refreshing—exactly the kind of energy you need to deal with those 50 extra relatives! 💃")
+    elif st.session_state.chai_type == "elaichi":
+        st.success("Calm and sweet. Just take a deep breath... the functions are almost over. You've got this. 🌸")
+    elif st.session_state.chai_type == "masala":
+        st.warning("Handling 10 things at once like a pro? This one is for the multitasker in you. 💪")
+
+    if st.session_state.chai_type:
+        st.write("---")
+        if st.button("Next?"):
+            st.session_state.step = 3
+            st.rerun()
 
 elif st.session_state.step == 3:
     st.title("A Little Reminder... 💌")
     
-    if lottie_heart:
-        st_lottie(lottie_heart, height=200)
-    else:
-        st.header("❤️")
-
-    st.markdown(f"""
-    ### While you're busy being the best sister at the wedding:
-    * Don't forget to actually eat between the ceremonies.
-    * You're doing an amazing job handling everything.
-    * I'm right here in Pune, waiting to hear all the gossip once you're free.
-    
-    **I'm genuinely so proud of how you're managing it all, Vibhuti.** """)
+    st.markdown("""
+    <div class='hinglish-text'>
+    While you're busy being the perfect sister at the wedding:
+    <br>
+    <ul>
+        <li>Keep drinking water (sirf chai nahi!).</li>
+        <li>You're doing an amazing job, Vibhuti.</li>
+        <li>I'm right here in Pune, waiting to hear all the shaadi gossip.</li>
+    </ul>
+    <b>I'm genuinely so proud of how you handle everything with such grace.</b>
+    </div>
+    """, unsafe_allow_html=True)
     
     if st.button("Click for a final surprise 🎁"):
-        st.balloons()
-        st.toast("You're my favorite person to talk to!", icon='❤️')
-        time.sleep(2)
-        st.markdown("#### Can't wait to grab a *real* chai with you when you're back. ☕✨")
-        st.write("- Pratik") # Added your name here for a personal touch
+        st.session_state.step = 4
+        st.rerun()
+
+elif st.session_state.step == 4:
+    st.balloons()
+    st.title("For You. ❤️")
+    
+    # The "Polaroid" Surprise
+    st.markdown("""
+    <div class="polaroid">
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZ1JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKoWXlo3M1nKSYg/giphy.gif" alt="Chai Love" style="width:100%">
+        <div style="padding: 20px;">
+            <h3 style="color: #6F4E37;">I genuinely like you, Vibhuti.</h3>
+            <p style="color: #4b3621; font-style: italic;">
+            Efforts are easy when it's for someone as special as you. 
+            Can't wait to grab a <b>real</b> chai with you when you're back in Pune.
+            </p>
+            <p style="text-align: right; font-weight: bold;">- Pratik</p>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    if st.button("Start Over"):
+        st.session_state.step = 0
+        st.session_state.chai_type = None
+        st.rerun()
