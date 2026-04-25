@@ -11,7 +11,7 @@ def load_gif(path):
     with open(path, "rb") as f:
         return base64.b64encode(f.read()).decode()
 
-# ---------------- RANDOM HEARTS (NO OVERLAP) ----------------
+# ---------------- RANDOM HEARTS ----------------
 def generate_hearts(n=40):
     hearts_html = ""
     placed = []
@@ -20,7 +20,6 @@ def generate_hearts(n=40):
 
     for _ in range(n):
         attempts = 0
-
         while attempts < 20:
             left = random.randint(0, 100)
             top = random.randint(0, 100)
@@ -143,7 +142,7 @@ elif st.session_state.step == 2:
     if st.button("Masala chai"):
         st.session_state.chai = "masala"
 
-    # Feedback messages
+    # Feedback
     if st.session_state.chai == "adrak":
         st.info("Strong choice… just like you handling everything 💃")
 
@@ -177,14 +176,14 @@ elif st.session_state.step == 4:
     st.balloons()
     st.title("For you 💖")
 
-    # 👉 USE YOUR ORIGINAL FILE NAMES HERE
+    # ✅ YOUR GIF MAP
     gif_map = {
         "adrak": "assets/2790C438-E4B5-4F3D-B632.gif",
         "elaichi": "assets/3348D606-33C1-4A5F-AECB.gif",
         "masala": "assets/AE50B32D-7F9B-41CD-A146.gif"
     }
 
-    gif_path = gif_map.get(st.session_state.chai, "assets/bear.gif")
+    gif_path = gif_map.get(st.session_state.chai, "assets/F8020E96-3AB7-49E9-A142.gif")
 
     try:
         gif = load_gif(gif_path)
@@ -195,7 +194,7 @@ elif st.session_state.step == 4:
     except:
         st.warning("Check GIF names in assets folder")
 
-    # Final message (clean)
+    # Final message
     st.markdown("### You're handling a lot right now 💭")
     st.markdown("And you're doing it calmly… that’s not normal, that’s rare.")
     st.markdown("Bas ek baat yaad rakhna:")
