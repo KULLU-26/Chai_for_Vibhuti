@@ -11,26 +11,49 @@ def load_gif(path):
     with open(path, "rb") as f:
         return base64.b64encode(f.read()).decode()
 
-# ---------------- RANDOM HEARTS ----------------
-def generate_hearts(n=50):
+# ---------------- RANDOM HEARTS (NO OVERLAP) ----------------
+def generate_hearts(n=40):
     hearts_html = ""
-    for _ in range(n):
-        size = random.randint(12, 30)
-        left = random.randint(0, 100)
-        top = random.randint(0, 100)
-        opacity = round(random.uniform(0.15, 0.4), 3)
+    placed = []
 
-        hearts_html += f"""
-        <div style="
-            position:fixed;
-            top:{top}%;
-            left:{left}%;
-            font-size:{size}px;
-            opacity:{opacity};
-            pointer-events:none;
-            z-index:0;
-        ">♥️</div>
-        """
+    heart_types = ["💗", "💕", "♥️"]
+
+    for _ in range(n):
+        attempts = 0
+
+        while attempts < 20:
+            left = random.randint(0, 100)
+            top = random.randint(0, 100)
+
+            # prevent overlap
+            too_close = False
+            for (px, py) in placed:
+                if abs(px - left) < 8 and abs(py - top) < 8:
+                    too_close = True
+                    break
+
+            if not too_close:
+                placed.append((left, top))
+
+                size = random.randint(14, 28)
+                opacity = round(random.uniform(0.12, 0.35), 2)
+                heart = random.choice(heart_types)
+
+                hearts_html += f"""
+                <div style="
+                    position:fixed;
+                    top:{top}%;
+                    left:{left}%;
+                    font-size:{size}px;
+                    opacity:{opacity};
+                    pointer-events:none;
+                    z-index:0;
+                ">{heart}</div>
+                """
+                break
+
+            attempts += 1
+
     return hearts_html
 
 st.markdown(generate_hearts(), unsafe_allow_html=True)
@@ -120,7 +143,7 @@ elif st.session_state.step == 2:
     if st.button("Masala chai"):
         st.session_state.chai = "masala"
 
-    # --- Feedback messages ---
+    # Feedback messages
     if st.session_state.chai == "adrak":
         st.info("Strong choice… just like you handling everything 💃")
 
@@ -154,13 +177,14 @@ elif st.session_state.step == 4:
     st.balloons()
     st.title("For you 💖")
 
+    # 👉 USE YOUR ORIGINAL FILE NAMES HERE
     gif_map = {
-        "adrak": "assets/chai.gif",
-        "elaichi": "assets/cute1.gif",
-        "masala": "assets/phone.gif"
+        "adrak": "assets/2790C438-E4B5-4F3D-B632.gif",
+        "elaichi": "assets/3348D606-33C1-4A5F-AECB.gif",
+        "masala": "assets/AE50B32D-7F9B-41CD-A146.gif"
     }
 
-    gif_path = gif_map.get(st.session_state.chai, "assets/chai.gif")
+    gif_path = gif_map.get(st.session_state.chai, "assets/bear.gif")
 
     try:
         gif = load_gif(gif_path)
@@ -171,7 +195,7 @@ elif st.session_state.step == 4:
     except:
         st.warning("Check GIF names in assets folder")
 
-    # --- CLEAN FINAL MESSAGE ---
+    # Final message (clean)
     st.markdown("### You're handling a lot right now 💭")
     st.markdown("And you're doing it calmly… that’s not normal, that’s rare.")
     st.markdown("Bas ek baat yaad rakhna:")
