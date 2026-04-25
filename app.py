@@ -12,13 +12,13 @@ def load_gif(path):
         return base64.b64encode(f.read()).decode()
 
 # ---------------- RANDOM HEARTS ----------------
-def generate_hearts(n=35):
+def generate_hearts(n=50):
     hearts_html = ""
     for _ in range(n):
         size = random.randint(12, 30)
         left = random.randint(0, 100)
         top = random.randint(0, 100)
-        opacity = round(random.uniform(0.15, 0.4), 2)
+        opacity = round(random.uniform(0.15, 0.4), 3)
 
         hearts_html += f"""
         <div style="
