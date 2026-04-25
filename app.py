@@ -2,12 +2,16 @@ import streamlit as st
 import time
 import base64
 import random
+import os
 
 # ---------------- CONFIG ----------------
 st.set_page_config(page_title="For Vibhuti ☕", page_icon="💖")
 
 # ---------------- LOAD GIF ----------------
 def load_gif(path):
+    if not os.path.exists(path):
+        st.error(f"Missing file: {path}")
+        return None
     with open(path, "rb") as f:
         return base64.b64encode(f.read()).decode()
 
@@ -15,7 +19,6 @@ def load_gif(path):
 def generate_hearts(n=40):
     hearts_html = ""
     placed = []
-
     heart_types = ["💗", "💕", "♥️"]
 
     for _ in range(n):
@@ -24,7 +27,6 @@ def generate_hearts(n=40):
             left = random.randint(0, 100)
             top = random.randint(0, 100)
 
-            # prevent overlap
             too_close = False
             for (px, py) in placed:
                 if abs(px - left) < 8 and abs(py - top) < 8:
@@ -89,7 +91,6 @@ button {
     box-shadow: 0 8px 20px rgba(0,0,0,0.08);
 }
 
-/* TEXT CENTER */
 .center {
     text-align: center;
 }
@@ -142,15 +143,27 @@ elif st.session_state.step == 2:
     if st.button("Masala chai"):
         st.session_state.chai = "masala"
 
-    # Feedback
+    # --- SHOW FUN GIFS ---
     if st.session_state.chai == "adrak":
-        st.info("Strong choice… just like you handling everything 💃")
+        st.info("Strong choice… just like you 💃")
+        gif = load_gif("assets/adrak.GiF")
 
     elif st.session_state.chai == "elaichi":
         st.success("Soft & calm… your vibe 🌸")
+        gif = load_gif("assets/elaichi.GIF")
 
     elif st.session_state.chai == "masala":
         st.warning("Multitasking queen energy 💪")
+        gif = load_gif("assets/masala.GIF")
+
+    else:
+        gif = None
+
+    if gif:
+        st.markdown(
+            f'<div class="card"><img src="data:image/gif;base64,{gif}" width="100%"></div>',
+            unsafe_allow_html=True
+        )
 
     if st.session_state.chai:
         time.sleep(0.3)
@@ -176,25 +189,14 @@ elif st.session_state.step == 4:
     st.balloons()
     st.title("For you 💖")
 
-    # ✅ YOUR GIF MAP
-    gif_map = {
-        "adrak": "assets/2790C438-E4B5-4F3D-B632.gif",
-        "elaichi": "assets/3348D606-33C1-4A5F-AECB.gif",
-        "masala": "assets/AE50B32D-7F9B-41CD-A146.gif"
-    }
+    gif = load_gif("assets/bear.GIF")
 
-    gif_path = gif_map.get(st.session_state.chai, "assets/F8020E96-3AB7-49E9-A142.gif")
-
-    try:
-        gif = load_gif(gif_path)
+    if gif:
         st.markdown(
             f'<div class="card"><img src="data:image/gif;base64,{gif}" width="100%"></div>',
             unsafe_allow_html=True
         )
-    except:
-        st.warning("Check GIF names in assets folder")
 
-    # Final message
     st.markdown("### You're handling a lot right now 💭")
     st.markdown("And you're doing it calmly… that’s not normal, that’s rare.")
     st.markdown("Bas ek baat yaad rakhna:")
